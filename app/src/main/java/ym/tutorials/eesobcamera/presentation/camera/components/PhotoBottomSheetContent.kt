@@ -69,14 +69,14 @@ fun PhotoBottomSheetContent(
         ) {
             items(bitmaps){imageData->
                 val bitmap = remember {
-                    imageData.bitmap
+                    imageData.bitmap.copy(imageData.bitmap.config, true)
                 }
 
-//                DisposableEffect(bitmap) {
-//                    onDispose {
-//                        bitmap.recycle()
-//                    }
-//                }
+                DisposableEffect(bitmap) {
+                    onDispose {
+                        bitmap.recycle()
+                    }
+                }
                 Box(
                     modifier = Modifier
                         .clickable {
