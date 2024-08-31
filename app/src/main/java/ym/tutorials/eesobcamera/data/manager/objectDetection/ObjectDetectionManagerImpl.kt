@@ -88,7 +88,9 @@ class ObjectDetectionManagerImpl @Inject constructor(
         if (numElements == 0) return emptyList()
 
         var inferenceTime = SystemClock.uptimeMillis()
-        val resizedBitmap = Bitmap.createScaledBitmap(bitmap, tensorWidth, tensorHeight, false)
+
+        val bitmapCopy = bitmap.copy(bitmap.config, true)
+        val resizedBitmap = Bitmap.createScaledBitmap(bitmapCopy, tensorWidth, tensorHeight, false)
 
         val tensorImage = TensorImage(DataType.FLOAT32)
         tensorImage.load(resizedBitmap)
@@ -104,6 +106,9 @@ class ObjectDetectionManagerImpl @Inject constructor(
             numElements,
             numChannel,
             labels)
+
+        resizedBitmap.recycle()
+        bitmapCopy.recycle()
         inferenceTime = SystemClock.uptimeMillis() - inferenceTime
 
         if(bestBoxes == null) {

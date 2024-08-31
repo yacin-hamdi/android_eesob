@@ -27,6 +27,12 @@ object DrawDetectionBox{
         val bottom = box.y2 * bitmapHeight
 
         val canvas = Canvas(mutableBitmap)
+         canvas.drawBitmap(
+             bitmap,
+             0f,
+             0f,
+             null
+         )
         val paint = Paint().apply {
             style = Paint.Style.STROKE
             strokeWidth = 12f

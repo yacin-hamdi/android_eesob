@@ -41,13 +41,28 @@ class ImageRepositoryImpl(private val context: Context): ImageRepository {
                     filename.endsWith(".png") ||
                     filename.endsWith(".jpeg")){
                     try {
-                        context.openFileInput(filename).use{ inputStream ->
-                            val bitmap = BitmapFactory.decodeStream(inputStream)
+                        val options = BitmapFactory.Options()
+                        options.inJustDecodeBounds = true
+                        context.openFileInput(filename).use { inputStream ->
+                            BitmapFactory.decodeStream(inputStream, null, options)
+                        }
+
+                            options.inSampleSize = calculateSampleSize(
+                                options.outHeight,
+                                options.outWidth,
+                                512,
+                                512
+                                )
+                            options.inJustDecodeBounds = false
+                        context.openFileInput(filename).use {inputStream ->
+                            val bitmap = BitmapFactory.decodeStream(inputStream, null, options)
                             bitmap?.let {
                                 imageList.add(ImageData(filename, it))
                             }
-
                         }
+
+
+
                     } catch (e: Exception){
                         Log.e("ImageRepository", "Error loading image", e)
                     }
@@ -68,6 +83,21 @@ class ImageRepositoryImpl(private val context: Context): ImageRepository {
 
             success
         }
+    }
+
+    fun calculateSampleSize(height: Int, width: Int, reqHeight: Int, reqWidth: Int): Int {
+        var inSampleSize = 1
+
+        if (height > reqHeight || width > reqWidth) {
+            val halfHeight = height / 2
+            val halfWidth = width / 2
+
+            while (halfHeight / inSampleSize >= reqHeight && halfWidth / inSampleSize >= reqWidth) {
+                inSampleSize *= 2
+            }
+        }
+
+        return inSampleSize
     }
 
 
