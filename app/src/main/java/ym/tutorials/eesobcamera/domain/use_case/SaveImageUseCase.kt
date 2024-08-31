@@ -9,11 +9,13 @@ class SaveImageUseCase @Inject constructor(
 ) {
     suspend operator fun invoke(
         bitmap: Bitmap,
-        filename: String
+        filename: String,
+        onSuccess: () -> Unit
     ){
         imageRepository.saveImage(
             bitmap = bitmap,
-            filename = filename
+            filename = filename,
+            onSuccess = onSuccess
         )
     }
 }

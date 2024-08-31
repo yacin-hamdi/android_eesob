@@ -16,7 +16,8 @@ object DrawDetectionBox{
      fun onDrawBox(
         bitmap: Bitmap,
         box: Detection
-    ){
+    ): Bitmap{
+         val mutableBitmap = bitmap.copy(bitmap.config, true)
         val bitmapWidth = bitmap.width * 1f
         val bitmapHeight = bitmap.height * 1f
 
@@ -25,10 +26,10 @@ object DrawDetectionBox{
         val right = box.x2 * bitmapWidth
         val bottom = box.y2 * bitmapHeight
 
-        val canvas = Canvas(bitmap)
+        val canvas = Canvas(mutableBitmap)
         val paint = Paint().apply {
             style = Paint.Style.STROKE
-            strokeWidth = 8f
+            strokeWidth = 12f
             color = getColorForLabel(box.clsName)      // Assigning a color based on the object label
         }
 
@@ -67,7 +68,7 @@ object DrawDetectionBox{
             })
 
 
-
+        return mutableBitmap
 
     }
 

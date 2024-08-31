@@ -102,7 +102,9 @@ fun CameraScreen(
                 bitmaps = bitmaps,
                 modifier = Modifier
                     .fillMaxSize()
-            )
+            ){ filename ->
+                viewModel.deleteImage(filename)
+            }
 
         },
         sheetPeekHeight = 0.dp

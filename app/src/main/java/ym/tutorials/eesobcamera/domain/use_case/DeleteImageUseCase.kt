@@ -7,10 +7,12 @@ class DeleteImageUseCase @Inject constructor(
     private val imageRepository: ImageRepository
 ) {
     suspend operator fun invoke(
-        filename: String
+        filename: String,
+        onSuccess: () -> Unit
     ): Boolean{
         return imageRepository.deleteImage(
-            filename = filename
+            filename = filename,
+            onSuccess = onSuccess
         )
     }
 }

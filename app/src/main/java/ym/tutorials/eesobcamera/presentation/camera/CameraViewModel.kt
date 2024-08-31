@@ -45,7 +45,9 @@ class CameraViewModel @Inject constructor(
     private val _photoInference = mutableStateOf(false)
     val photoInference: State<Boolean> = _photoInference
 
-
+    init {
+        loadImages()
+    }
 
 
     fun takePhoto(
@@ -110,15 +112,19 @@ class CameraViewModel @Inject constructor(
     private suspend fun processImage(bitmap: Bitmap) {
         withContext(Dispatchers.IO){
             val boxResults = objectDetectionManager.detectObjectsInBitmap(bitmap)
-            boxResults.forEach{box ->
+            val newBitmap = boxResults.fold(bitmap.copy(bitmap.config, true)){
+                bitmap, box ->
                 DrawDetectionBox.onDrawBox(bitmap, box)
-
             }
+
             val filename = "image_${System.currentTimeMillis()}.png"
             saveImageUseCase(
-                bitmap = bitmap,
-                filename = filename
-            )
+                bitmap = newBitmap,
+                filename = filename,
+            ){
+                loadImages()
+            }
+
         }
 
 
@@ -127,6 +133,18 @@ class CameraViewModel @Inject constructor(
     fun loadImages(){
         viewModelScope.launch {
             _imagesData.value = loadImagesUseCase()
+        }
+    }
+
+    fun deleteImage(
+        filename: String
+    ){
+        viewModelScope.launch{
+            deleteImageUseCase(
+                filename = filename
+            ){
+                loadImages()
+            }
         }
     }
 

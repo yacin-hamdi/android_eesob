@@ -11,15 +11,20 @@ import ym.tutorials.eesobcamera.domain.model.ImageData
 import ym.tutorials.eesobcamera.domain.repository.ImageRepository
 
 class ImageRepositoryImpl(private val context: Context): ImageRepository {
-    override suspend fun saveImage(bitmap: Bitmap, filename: String) {
+    override suspend fun saveImage(
+        bitmap: Bitmap,
+        filename: String,
+        onSuccess: () -> Unit
+    ) {
         withContext(Dispatchers.IO){
             try{
                 context.openFileOutput(
                     filename,
                     Context.MODE_PRIVATE
-                ).use {outputStream ->
+                ).use { outputStream ->
                     bitmap.compress(Bitmap.CompressFormat.PNG, 90, outputStream)
                 }
+                onSuccess()
 
             }catch(e: Exception){
                 Log.e("ImageRepository", "error saving image", e)
@@ -52,9 +57,16 @@ class ImageRepositoryImpl(private val context: Context): ImageRepository {
         }
     }
 
-    override suspend fun deleteImage(filename: String): Boolean {
+    override suspend fun deleteImage(
+        filename: String,
+        onSuccess: () -> Unit
+    ): Boolean {
         return withContext(Dispatchers.IO){
-                context.deleteFile(filename)
+            val success = context.deleteFile(filename)
+            if(success)
+                onSuccess()
+
+            success
         }
     }
 
