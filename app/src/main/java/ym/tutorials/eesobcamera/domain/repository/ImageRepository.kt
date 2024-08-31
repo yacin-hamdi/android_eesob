@@ -1,6 +1,7 @@
 package ym.tutorials.eesobcamera.domain.repository
 
 import android.graphics.Bitmap
+import ym.tutorials.eesobcamera.domain.model.ImageData
 
 interface ImageRepository {
     suspend fun saveImage(
@@ -8,7 +9,6 @@ interface ImageRepository {
         filename: String
     )
 
-    suspend fun loadImage(
-        filename: String
-    ): Bitmap?
+    suspend fun loadImage(): List<ImageData>
+    suspend fun deleteImage(filename: String): Boolean
 }
