@@ -24,10 +24,11 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import ym.tutorials.eesobcamera.domain.model.ImageData
 
 @Composable
 fun PhotoBottomSheetContent(
-    bitmaps: List<Bitmap>,
+    bitmaps: List<ImageData>,
     modifier: Modifier = Modifier
 ){
     var showDialog by rememberSaveable {
@@ -55,14 +56,14 @@ fun PhotoBottomSheetContent(
             contentPadding = PaddingValues(16.dp),
             modifier = modifier
         ) {
-            items(bitmaps){bitmap->
+            items(bitmaps){imageData->
                 Image(
-                    bitmap = bitmap.asImageBitmap(),
+                    bitmap = imageData.bitmap.asImageBitmap(),
                     contentDescription = null,
                     modifier = Modifier
                         .clip(RoundedCornerShape(10.dp))
                         .clickable {
-                            selectedBitmap = bitmap
+                            selectedBitmap = imageData.bitmap
                             showDialog = true
                         }
                 )

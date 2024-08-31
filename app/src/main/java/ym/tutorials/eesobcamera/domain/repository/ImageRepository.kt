@@ -9,6 +9,6 @@ interface ImageRepository {
         filename: String
     )
 
-    suspend fun loadImage(): List<ImageData>
+    suspend fun loadImages(): List<ImageData>
     suspend fun deleteImage(filename: String): Boolean
 }

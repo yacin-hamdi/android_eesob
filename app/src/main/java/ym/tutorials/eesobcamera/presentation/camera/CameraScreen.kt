@@ -74,7 +74,7 @@ fun CameraScreen(
     }
 
 
-    val bitmaps by viewModel.bitmaps.collectAsState()
+    val bitmaps by viewModel.imagesData.collectAsState()
 
     LaunchedEffect(
         key1 = viewModel.photoInference.value,

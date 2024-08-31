@@ -24,15 +24,23 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import ym.tutorials.eesobcamera.common.DrawDetectionBox
 import ym.tutorials.eesobcamera.domain.manager.objectDetection.ObjectDetectionManager
+import ym.tutorials.eesobcamera.domain.model.ImageData
+import ym.tutorials.eesobcamera.domain.repository.ImageRepository
+import ym.tutorials.eesobcamera.domain.use_case.DeleteImageUseCase
+import ym.tutorials.eesobcamera.domain.use_case.LoadImagesUseCase
+import ym.tutorials.eesobcamera.domain.use_case.SaveImageUseCase
 import javax.inject.Inject
 
 @HiltViewModel
 class CameraViewModel @Inject constructor(
-    val objectDetectionManager: ObjectDetectionManager,
+    private val objectDetectionManager: ObjectDetectionManager,
+    private val saveImageUseCase: SaveImageUseCase,
+    private val deleteImageUseCase: DeleteImageUseCase,
+    private val loadImagesUseCase: LoadImagesUseCase,
     @ApplicationContext val context: Context
 ): ViewModel() {
-    private val _bitmaps = MutableStateFlow<List<Bitmap>>(emptyList())
-    val bitmaps = _bitmaps.asStateFlow()
+    private val _imagesData = MutableStateFlow<List<ImageData>>(emptyList())
+    val imagesData = _imagesData.asStateFlow()
 
     private val _photoInference = mutableStateOf(false)
     val photoInference: State<Boolean> = _photoInference
@@ -106,11 +114,20 @@ class CameraViewModel @Inject constructor(
                 DrawDetectionBox.onDrawBox(bitmap, box)
 
             }
-
-            _bitmaps.value += bitmap
+            val filename = "image_${System.currentTimeMillis()}.png"
+            saveImageUseCase(
+                bitmap = bitmap,
+                filename = filename
+            )
         }
 
 
+    }
+
+    fun loadImages(){
+        viewModelScope.launch {
+            _imagesData.value = loadImagesUseCase()
+        }
     }
 
     override fun onCleared() {

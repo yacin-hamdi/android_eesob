@@ -27,7 +27,7 @@ class ImageRepositoryImpl(private val context: Context): ImageRepository {
         }
     }
 
-    override suspend fun loadImage(): List<ImageData> {
+    override suspend fun loadImages(): List<ImageData> {
         return withContext(Dispatchers.IO){
             val imageList = mutableListOf<ImageData>()
             val fileList = context.fileList()
