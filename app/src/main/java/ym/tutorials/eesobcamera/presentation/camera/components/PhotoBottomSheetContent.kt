@@ -1,13 +1,11 @@
 package ym.tutorials.eesobcamera.presentation.camera.components
 
-import android.graphics.Bitmap
-import androidx.compose.foundation.Image
+import android.content.Context
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
@@ -15,44 +13,40 @@ import androidx.compose.foundation.lazy.staggeredgrid.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Cancel
 import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.Dialog
 import coil.compose.AsyncImage
 import ym.tutorials.eesobcamera.domain.model.ImageData
-
+import java.io.File
 
 
 @Composable
 fun PhotoBottomSheetContent(
-    bitmaps: List<ImageData>,
+    imageData: List<ImageData>,
     modifier: Modifier = Modifier,
+    context: Context,
     onDeleteItem: (item: String) -> Unit
 ){
     var showDialog by rememberSaveable {
         mutableStateOf(false)
     }
 
-    var selectedBitmap by rememberSaveable {
-        mutableStateOf<Bitmap?>(null)
+    var imagePath by rememberSaveable {
+        mutableStateOf<File?>(null)
     }
-    if(bitmaps.isEmpty()){
+    if(imageData.isEmpty()){
         Box(
             modifier = Modifier
                 .padding(16.dp),
@@ -70,17 +64,19 @@ fun PhotoBottomSheetContent(
             contentPadding = PaddingValues(16.dp),
             modifier = modifier
         ) {
-            items(bitmaps){imageData->
+            items(imageData){ imageData->
+                val absolutePath = context.filesDir.absolutePath + File.separator + imageData.filePath
+                val file = File(absolutePath)
 
                 Box(
                     modifier = Modifier
                         .clickable {
-                            selectedBitmap = imageData.bitmap
+                            imagePath = file
                             showDialog = true
                         }
                 ){
                     AsyncImage(
-                        model = imageData.bitmap,
+                        model = file,
                         contentDescription = null,
                         modifier = Modifier
                             .clip(RoundedCornerShape(10.dp))
@@ -109,7 +105,7 @@ fun PhotoBottomSheetContent(
 
     if(showDialog){
         ImageDialog(
-            bitmap = selectedBitmap
+            imagePath = imagePath
         ) { show ->
             showDialog = show
 

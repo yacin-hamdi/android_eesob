@@ -40,32 +40,9 @@ class ImageRepositoryImpl(private val context: Context): ImageRepository {
                 if(filename.endsWith(".jpg") ||
                     filename.endsWith(".png") ||
                     filename.endsWith(".jpeg")){
-                    try {
-                        val options = BitmapFactory.Options()
-                        options.inJustDecodeBounds = true
-                        context.openFileInput(filename).use { inputStream ->
-                            BitmapFactory.decodeStream(inputStream, null, options)
-                        }
-
-                            options.inSampleSize = calculateSampleSize(
-                                options.outHeight,
-                                options.outWidth,
-                                512,
-                                512
-                                )
-                            options.inJustDecodeBounds = false
-                        context.openFileInput(filename).use {inputStream ->
-                            val bitmap = BitmapFactory.decodeStream(inputStream, null, options)
-                            bitmap?.let {
-                                imageList.add(ImageData(filename, it))
-                            }
-                        }
-
-
-
-                    } catch (e: Exception){
-                        Log.e("ImageRepository", "Error loading image", e)
-                    }
+                    imageList.add(ImageData(
+                        filePath = filename
+                    ))
                 }
             }
             imageList

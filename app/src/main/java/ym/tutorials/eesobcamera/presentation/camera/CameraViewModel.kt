@@ -151,7 +151,7 @@ class CameraViewModel @Inject constructor(
 
     override fun onCleared() {
         super.onCleared()
-        _imagesData.value.forEach { it.bitmap.recycle() }
+//        _imagesData.value.forEach { it.bitmap.recycle() }
         objectDetectionManager.clear()
         viewModelScope.cancel()
 
