@@ -8,6 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.window.Dialog
+import coil.compose.AsyncImage
 
 @Composable
 fun ImageDialog(
@@ -20,14 +21,16 @@ fun ImageDialog(
         }
     ){
         bitmap?.let{
-            Image(
-                bitmap = it.asImageBitmap(),
+            AsyncImage(
+                model = it.asImageBitmap(),
                 contentDescription = null,
-                modifier = Modifier.fillMaxSize()
+                modifier = Modifier
+                    .fillMaxSize()
                     .clickable {
                         onShowDialog(false)
                     }
             )
+//
 
         }
     }

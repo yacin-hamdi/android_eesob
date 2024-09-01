@@ -34,7 +34,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import coil.compose.AsyncImage
 import ym.tutorials.eesobcamera.domain.model.ImageData
+
+
 
 @Composable
 fun PhotoBottomSheetContent(
@@ -68,29 +71,19 @@ fun PhotoBottomSheetContent(
             modifier = modifier
         ) {
             items(bitmaps){imageData->
-                val bitmap = remember {
-                    imageData.bitmap.copy(imageData.bitmap.config, true)
-                }
 
-                DisposableEffect(bitmap) {
-                    onDispose {
-                        bitmap.recycle()
-                    }
-                }
                 Box(
                     modifier = Modifier
                         .clickable {
-                            selectedBitmap = bitmap
+                            selectedBitmap = imageData.bitmap
                             showDialog = true
                         }
                 ){
-
-                    Image(
-                        bitmap = bitmap.asImageBitmap(),
+                    AsyncImage(
+                        model = imageData.bitmap,
                         contentDescription = null,
                         modifier = Modifier
                             .clip(RoundedCornerShape(10.dp))
-
                     )
 
                     IconButton(
